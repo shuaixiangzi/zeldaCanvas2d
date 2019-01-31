@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="css/style.css"/>
+    <style>
+
+        canvas {
+            display: block;
+            margin: 200px auto;
+            border: 1px solid #dcdcdc;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="test" width="500" height="500">
+        <p>您的浏览器版本不支持此功能，请升级。</p>
+    </canvas>
+<script>
+    (function () {
+        let canvas = document.getElementById('test');
+
+        if(!canvas.getContext){
+            return;
+        }
+        let ctx = canvas.getContext('2d');
+        let boxWidth = 30;
+        let boxHeight = 30;
+
+        //缓存
+        let canvasBuffer =document.createElement("canvas");
+        let ctxBuffer = canvasBuffer.getContext("2d");
+        canvasBuffer.width = canvas.width;
+        canvasBuffer.height = canvas.height;
+
+        var xspeed = 30;
+        var yspeed = 30;
+
+        function animation(type) {
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            ctxBuffer.clearRect(0,0,canvasBuffer.width,canvasBuffer.height);
+            console.log(canvasBuffer.width,canvasBuffer.height);
+            drawFrameBuffer(type);
+            setTimeout(function () {
+                ctx.drawImage(canvasBuffer,0,0);
+            },0)
+
+        }
+        function drawFrameBuffer(type) {
+            //window.requestAnimationFrame(drawFrame,canvas);
+            var bgImg = new Image();
+            bgImg.src = './img/scene/bg.jpg';
+            bgImg.onload = function () {
+                let pat = ctx.createPattern(bgImg,'repeat');
+                ctxBuffer.rect(0,0,500,500);
+                ctxBuffer.fillStyle = pat;
+                ctxBuffer.fill();
+            }
+
+            var img = new Image();
+            img.src = './img/scene/grassLand.png';
+
+            img.onload = function(){
+                ctxBuffer.drawImage(img,0,0,boxWidth,boxHeight);
+            };
+
+            var flower = new Image();
+            flower.src = './img/scene/flower1.png';
+
+            flower.onload = function(){
+                switch (type) {
+                    case 'right':
+                        if(xspeed<=420){
+                            ctxBuffer.drawImage(flower,xspeed+=30,yspeed,boxWidth,boxHeight);
+                        }
+                        else{
+                            ctxBuffer.drawImage(flower,xspeed,yspeed,boxWidth,boxHeight);
+                        }
+                        break;
+                    case 'left':
+                        if(xspeed>=30){
+                            ctxBuffer.drawImage(flower,xspeed-=30,yspeed,boxWidth,boxHeight);
+                        }
+                        else{
+                            ctxBuffer.drawImage(flower,xspeed,yspeed,boxWidth,boxHeight);
+                        }
+
+                        break;
+                    case 'top':
+                        //ctx.drawImage(flower,xspeed,yspeed-=30,boxWidth,boxHeight);
+                        if(yspeed>=30){
+                            ctxBuffer.drawImage(flower,xspeed,yspeed-=30,boxWidth,boxHeight);
+                        }
+                        else{
+                            ctxBuffer.drawImage(flower,xspeed,yspeed,boxWidth,boxHeight);
+                        }
+                        break;
+                    case 'bottom':
+                        if(yspeed<=420){
+                            ctxBuffer.drawImage(flower,xspeed,yspeed+=30,boxWidth,boxHeight);
+                        }
+                        else{
+                            ctxBuffer.drawImage(flower,xspeed,yspeed,boxWidth,boxHeight);
+                        }
+                        break;
+                    default:
+                        ctxBuffer.drawImage(flower,30,30,boxWidth,boxHeight);
+                        break;
+                }
+
+                //flower.x += xspeed;
+            };
+
+        };
+
+        animation();
+        document.onkeydown=function (event) {
+           /*if(event.keyCode === 37){
+               console.log('左');
+           }*/
+           switch (event.keyCode) {
+               case 37:
+                   animation('left');
+                   break;
+               case 39:
+                   animation('right');
+                   break;
+               case 38:
+                   animation('top');
+                   break;
+               case 40:
+                   animation('bottom');
+                   break;
+           }
+        }
+
+    })()
+</script>
+</body>
+</html>
