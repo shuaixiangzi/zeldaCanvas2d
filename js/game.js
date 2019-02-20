@@ -1,14 +1,41 @@
 (function () {
-    let canvas = document.createElement("canvas");
-    let ctx = canvas.getContext("2d");
+
+    /**
+     * 变量定义
+     * bgReady,bgImage 背景是否加载完成,背景图片
+     * heroReady,heroImage 英雄相关参数
+     * monsterReady,monsterImage 怪物相关参数
+     * hero 英雄相关参数
+     * monster 怪物相关参数
+     * monsterCaught
+     */
+
+    let canvas = document.createElement("canvas"),
+        ctx = canvas.getContext("2d"),
+        bgReady,
+        bgImage,
+        heroReady,
+        heroImage,
+        monsterReady,
+        monsterImage,
+        hero,
+        monster,
+        monsterCaught,
+        keysDown,
+        reset,
+        update,
+        render,
+        main,
+        w,
+        then;
 
     canvas.width = 512;
     canvas.height = 480;
     document.body.appendChild(canvas);
 
     // 背景图片问题
-    let bgReady = false;
-    let bgImage = new Image();
+    bgReady = false;
+    bgImage = new Image();
 
     bgImage.onload = function () {
         bgReady = true;
@@ -16,8 +43,8 @@
     bgImage.src = './img/games/background.png';
 
     // 英雄图片
-    let heroReady = false;
-    let heroImage = new Image();
+    heroReady = false;
+    heroImage = new Image();
     heroImage.onload = function () {
         heroReady = true;
     };
@@ -26,8 +53,8 @@
 
 
     // 怪物图片
-    let monsterReady = false;
-    let monsterImage = new Image();
+    monsterReady = false;
+    monsterImage = new Image();
     monsterImage.onload = function () {
         monsterReady = true;
     };
@@ -35,15 +62,15 @@
     monsterImage.src = './img/games/monster.png';
 
     // 游戏对象
-    let hero = {
+    hero = {
         speed: 256  //移动速度
     };
 
-    let monster = {};
-    let monsterCaught = 0;
+    monster = {};
+    monsterCaught = 0;
 
     //键盘操作事件
-    let keysDown = {};
+    keysDown = {};
 
     addEventListener('keydown', function (e) {
         keysDown[e.keyCode] = true;
@@ -54,7 +81,7 @@
     },false);
 
     //初始化方法
-    let reset = function () {
+    reset = function () {
         hero.x = canvas.width / 2;
         hero.y = canvas.height / 2;
 
@@ -63,7 +90,7 @@
     };
 
     //更新游戏状态
-    let update = function (modifier) {
+    update = function (modifier) {
         if (38 in keysDown) {
             hero.y -= hero.speed *modifier;
         }
@@ -90,7 +117,7 @@
     };
 
     // 绘制渲染
-    let render = function () {
+    render = function () {
         if(bgReady){
             ctx.drawImage(bgImage,0,0);
         }
@@ -112,7 +139,7 @@
     };
 
     //主循环
-    let main = function () {
+    main = function () {
         let now = Date.now();
         let delta = now - then;
 
@@ -124,10 +151,10 @@
         requestAnimationFrame(main);
     };
 
-    let w = window;
+    w = window;
     requestAnimationFrame = w.requestAnimationFrame || w.webkitRequestAnimationFrame || w.msRequestAnimationFrame || w.mozRequestAnimationFrame;
 
-    var then = Date.now();
+    then = Date.now();
     reset();
     main();
 
